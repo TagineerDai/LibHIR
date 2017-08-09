@@ -8,8 +8,8 @@
 #define INF 1.79e+308 //double
 
 enum {
-	ABS_L, RMSE_L, LL_L, GOLD_L,
-	ABS_E, RMSE_E, AUC_E, ACC_E,
+	MAE_L, RMSE_L, LL_L, GOLD_L,
+	MAE_E, RMSE_E, AUC_E, ACC_E,
 };
 enum mission{
 	TRAIN, TEST

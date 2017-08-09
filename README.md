@@ -1,8 +1,7 @@
 Documentation of LibHIR
 ======================
-LibHIR is an open source library implementing the model, Hierarchical Interaction Representation (HIR), to provide a collaborative prediction under the scenarios with multiple
-entities, features and contexts. It can be implemented for different tasks, i.e., regression, classification, ranking and so on. This document explains the useage of LibHIR.  
-You can get LibHIR at https://github.com/TagineerDai/LibHIR.  
+LibHIR is an open source library implementing the model, Hierarchical Interaction Representation (HIR), to provide a collaborative prediction under the scenarios with multiple entities, features and contexts. It can be implemented for different tasks, i.e., regression, classification, ranking and so on. This document explains the usage of LibHIR.
+You can get LibHIR from https://github.com/TagineerDai/LibHIR.  
 Please read the [COPYRIGHT](https://github.com/TagineerDai/LibHIR/blob/master/COPYRIGHT) before using or modifying LibHIR.  
 
 ## Table of Contents
@@ -12,73 +11,80 @@ Please read the [COPYRIGHT](https://github.com/TagineerDai/LibHIR/blob/master/CO
   + SVM Format
   + HIR Format
 - User Guide
-  + Transformat Script Usage
+  + Transform Script Usage
   + HIRTrain Usage
   + HIRTest Usage
 - Developer Guide
 - Additional Information  
 
 ##  Quick Start
-  If you are new to HIR and the task is classification or regression, please try our command-line tool version of LibHIR. We offer a script `prepro.py` to transfer the svm+ data into HIR format data file and initialize the config and model file. Generally, SVM+ data is to concatenate the observed features and contexts with svm format records. For more information, view the Data Format and Transfer section.
+  If you are new to HIR and the task is classification or regression, please try the command-line tool version of LibHIR. The script `prepro.py` transfers the data with the svm format into the HIR format, and initializes the config and the model files. Generally, the data has observed features and contexts. For more information, please refer to the Data Format and Transfer section.
 
   Usage: `prepro.py --rawfile filename.txt`
 
-  The preprocessing script generates four files, including `model.txt`, `config.txt`, `train.txt` and `test.txt`, which should be copied to the same direct as the program `HIRTrain` and `HIRTest` on Linux, or `HIRTrain.exe` and `HIRTest.exe` on Windows. Run the files with option `-h` and no parameter, to show the usage of them. For further information, view the Command-line Tool Usage section.
+  The preprocessing script generates four files, including `model.txt`, `config.txt`, `train.txt` and `test.txt`. These files should be copied to the same directory of the programs `HIRTrain` and `HIRTest` on Linux, or that of `HIRTrain.exe` and `HIRTest.exe` on Windows. If we run the files with option `-h`, it will show the usage of these files. For further information, please view the section of user guide.
 
   Usage: `HIRTrain/HIRTest [option parameter]`
 
-## Installation
+## Installation  
+
 ### Linux
 
-  On Linux systems, type `make` in the terminal to build the `HIRTrain` and `HIRTest`,  add `HIRTrain` and `HIRTest` after the `make` to build the given file.
+  On Linux systems, please type `make` in the terminal to build the `HIRTrain` and `HIRTest` files.
 
-  To uninstall LibHIR, use the command `make clean`.
+  To uninstall LibHIR, please use the command `make clean`.
 
 ### Windows
 
-  The executable files `HIRTrain.exe` and `HIRTest.exe` of the given command-line tool are offered. Once you are developing your own program based on LibHIR, please consult `Makefile` to manually build the project for linux platform, or simply use a IDE.
+  The executable files `HIRTrain.exe` and `HIRTest.exe` of the corresponding command-line tool are offered. Once you develop a program based on LibHIR, please consult `Makefile` about how to manually build the project on Linux platform, or how to simply use an IDE.
 
 ## Data Format and Transfer
-Under the `data` direction, we offered a sample python code `transformat.py` to build up the svm format data for our sample data movielens. And `prepro.py` under the `script` direction can transfer the data from the svm format into HIR format record, and generate HIR format config file and model files. View the Command-line tool usage for more details.
+Under the `data` directory, we offer a python script `transform.py` to prepare the svm format based on the sample data, i.e., movielens. And `prepro.py` under the `script` directory can transfer the data from the svm format into the HIR format, and generate config and model files. Please view the section of user guide for more details.
 
 ### SVM Format
-The HIR model is compatible with the record format of libsvm. The svm format data is the raw input data of the `prepro.py`.
-Compared with LibSVM or LibFM, our model supports latent vectors of multiple entities, observed featrues and contexts. The auxiliary feature is concatenated after normal svm records and splited by spaces.
-
-The svm data format is shown as follows:
+The LibHIR toolkit is compatible with the data format of libsvm, i.e., the svm format. If there exist features of entities and contextual information, these auxiliary features and contexts are concatenated after records, and are splited by spaces. The data with this format is the raw input of the `prepro.py`, and the format is shown as follows:
 
   &lt;label> &lt;index<sub>1</sub>>:&lt;value<sub>1</sub>> ... &lt;index<sub>k</sub>>:&lt;value<sub>k</sub>> &lt;feature<sub>1</sub>> ... &lt;feature<sub>k</sub>>
   .
   .
 
-  Each line is a record instance and is ended by a '\n' character. The target value (The value to be predicted in regression task, or the category label in classification task) is a real value number. In the `<dimension>:<index>` pairs, the entity index are integers, and could be in order or after shuffled. The feature values will be stored as float number. Once there are entities with observed features and contexts of a record, we concatenate them into one feature vector. It will be treated as a special feature vector of arbitrary dimensions, with its values can not be modified by the learning process.
+  Each line is a record and ended by the '\n' character. The label is a real value in a regression task, or a one hot category label in a classification task. In the `<index>:<value>` pairs, the indexes of entities are integers. The feature values can be stored in float. If there exist observed features of entities and contexts of a record, we concatenate them into a feature vector. This vector can be with arbitrary dimensionality, and cannot be updated by the learning process.
 
 ### HIR Format
-The preprocess script `prepro.py` will load the raw svm+ format file and generate record file, model file, and config file. Use the option `-h` or `--help` to view the usage of the options and parameters.
+The preprocess script `prepro.py` can load the data with the svm format and generate record file, model file, and config file. Please use the option `-h` or `--help` to view the usage of the options and parameters.
 
-The config file `config.txt` contains three sets of parameters, the `filenames` includes the names of model file, training data and testing data file, the `data specification` section is for the HIR model and records, and the `size of parameter` section includes index and number of each entity. The config format is `[param name] = [param value]`, and line comments in the config are started with a `#`.
+The config file `config.txt` contains three sets of parameters. The `filenames` are names of the model file, training data file and testing data file, the `data specification` section is for the HIR model and records, and the `size of parameter` section includes indices and number of entities. The config format is `[param name] = [param value]`, and line comments in the config are started with a `#`.
 
-It is not suggested that you to modify the parameter in config.txt directly. All the specification of HIR model and HIR record should are generate with the config file by preprocess script. The mismatch of configuration, model and record file will lead to fatal error.
+All specifications of the HIR model and HIR records can are generated by the config file. Modifying the parameters in config.txt directly is not suggested. The mismatch between configuration, model and record files will lead to the fatal error.
 
-The model.txt contains the features of each entities, the component parameter of the HIR model, such as the tensor layer, the hidden layer, the latent representations, and the target representation. If you are developing your own task with HIR representation, modifing the `prepro.py` and the `HIRModel::ModelLoading` and `HIRModel::ModelSaving` could help.
+The model.txt contains latent features of all entities, the parameters of the HIR model, such as the tensor layer, the hidden layer, the joint representations, and the final representation. If you are developing your own task with the HIR representation, please modify the `prepro.py`, the `HIRModel::ModelLoading` and the `HIRModel::ModelSaving`.
 
-The record files, namely the `train.txt` and the `text.txt`, are consist with record number, item index list, feature vector list, target value list and predict value list.
+The record files are the data sets, i.e., the `train.txt` and the `text.txt`.
 
 ## User Guide
 The command-line tool offers implementation of the basic regression and classification tasks based on the HIR representation.
 
-### Transformat Script Usage
-Once you have python and numpy installed, use the command `python prepro.py [option]` to preprocess the raw svm+ format data. Usage of the options is as follows.
+### Transform Script Usage
+  
+  sample:  
+
+  ```
+  python prepro.py --rawfile svm.txt
+  ```
+
+  ![](https://github.com/TagineerDai/LibHIR/blob/master/data/script.jpg?raw=true)  
+
+  Once you have installed python and numpy, the command `prepro.py` can be used to preprocess the data with the svm format. The usage of the options are as follows.  
 
   |Option    |Detail                                                     |
   |----------|---------------------------------------------------------  |
-  |--rawfile |the svm+ format file name.                                 |
+  |--rawfile |the name of svm format data.                               |
   |--Rtrain  |the ratio of split. Rtrain = training : total record       |
   |--category|the type of task. 1--regression 2--biClass 3..n--multiClass|
-  |--hlayer  |number of the hidden layer                                 |
-  |--dim     |dimensionality of the features, and representations.            |
+  |--hlayer  |number of the hidden layers                                 |
+  |--dim     |dimensionality of feature and representation.       |
 
-The Rtrain is a float in (0,1). And the category, hlayer and dim are integers.
+The Rtrain is a float value in (0,1). And the category, layer and dim are integers.  
 
 ### HIRTrain Usage
 
@@ -88,18 +94,19 @@ The Rtrain is a float in (0,1). And the category, hlayer and dim are integers.
   HIRTrain -r 100 -o 1 -a 0.001 -e 5
   ```
 
-  In the HIRTrain program, the HIR model is specified by the config file `config.txt` and trained by using the data in `train.txt`. The loss will showed for each epoch, and the model after training will be saved in `model.txt`.
+  In the HIRTrain program, the HIR model is specified by the config file `config.txt` and trained by using the data in `train.txt`. The loss will show at each epoch, and the model after training process will be saved in `model.txt`.
 
   |Option|Detail|Value|
   |------|------|-----|
-  | -r | epoch number          |           positive integer     |
-  | -o | objective function    | 0(ABS), 1(RMSE), 2(LL), 3(GOLD)|
-  | -e | evaluation function   | 4(ABS), 5(RMSE), 6(AUC), 7(ACC)|
+  | -r | number of epoch       |           positive integer     |
+  | -o | objective function    | 0(MAE), 1(RMSE), 2(LL), 3(GOLD)|
+  | -e | evaluation function   | 4(MAE), 5(RMSE), 6(AUC), 7(ACC)|
   | -a | learning rate         | float number in (0,1)          |
   | -m | learning method       | 0(SGD)                         |
   | -h | help                  | the help information           |
 
-  You can assign this epoch to any positive integer. The default learning method is Stochastic Gradient Descent. The learning rate (alpha) is a float, which represent the update ratio in the backpropagation process. Both the regression and classification tasks have corresponding objective functions and evaluations, missmatch task and option will cause error. For regression tasks, the optional objective function are the abstract distance(ABS) and the rooted mean squared error(RMSE), and the optional evaluation functions are the mean abstract error(ABS) and the rooted mean squared error(RMSE). For classification tasks, the optional objective functions are the log-loss(LL) and the zero-one loss(GOLD), and the optional evaluation functions are the area under ROC curve(AUC) and the mean accuracy(ACC).
+  You can assign a positive integer to the number of epoch. The default learning method is Stochastic Gradient Descent. The learning rate (alpha) is a float value, which represents the update ratio in the backpropagation process. Both the regression and classification tasks have corresponding objective functions and evaluations, the mismatch between tasks and options will cause error. For regression tasks, the optional objective functions are the abstract distance (MAE) and the rooted mean squared error (RMSE), and the optional evaluation functions are the mean abstract error (MAE) and the rooted mean squared error (RMSE). For classification tasks, the optional objective functions are the log-loss (LL) and the zero-one loss (GOLD), and the optional evaluation functions are the area under ROC curve (AUC) and the mean accuracy (ACC).  
+
 ### HIRTest Usage
 
   Sample:
@@ -107,23 +114,24 @@ The Rtrain is a float in (0,1). And the category, hlayer and dim are integers.
   ```
   HIRTest -e 5 -f answer.txt
   ```
+  ![](https://github.com/TagineerDai/LibHIR/blob/master/data/sample.jpg?raw=true)
 
-  In the HIRTest program, the evaluation function is related to the choice of task. Mismatch of task and evaluation function will cause error. The prediction record will be saved in a given file, `answer.txt` as shown in the sample.
+  In the HIRTest program, the evaluation function depends on the task. Mismatch between the task and the evaluation function will cause error. The predicted result can be saved in a given file, e.g., `answer.txt` in the sample code.
 
   |Options|Details|Value|
   |----|----|----|
-  | -e | evaluation function   | 4(ABS), 5(RMSE), 6(AUC), 7(ACC)|
-  | -f | predict record file   | filename stirng |
+  | -e | evaluation function   | 4(MAE), 5(RMSE), 6(AUC), 7(ACC)|
+  | -f | prediction file   | filename string |
   | -h | help                  | help information |
 
-  For regression tasks, the predicted value of every record is a double value in a single line, the optional evaluation functions are the mean abstract error(ABS) and the rooted mean squared error(RMSE). For classification tasks, the predicted value of every record is a one-hot vector to distinguish the category, and the optional evaluation functions are the area under the ROC curve(AUC) and the classification accuracy(ACC).
+  For regression tasks, the predicted result of each record is a double value, the optional evaluation functions are the mean abstract error (MAE) and the rooted mean squared error (RMSE). For classification tasks, the predicted value of each record is a one-hot vector, and the optional evaluation functions are the area under the ROC curve (AUC) and the classification accuracy (ACC).  
 
 ## Developer Guide
-  The network components are declared in the header file `HIR.h`. With the guide of the Makefile, you need to include this file in your C++ source files, then compile and link as introduced in the `Makefile`. The sample codes `HIRTrain.cpp` and `HIRTest.cpp` are references on how to carry out your own task based on LibHIR. The components of LibHIR set fifth below:
+  With the guide of the Makefile, you need to include the header file `HIR.h` in your C++ source files, then compile and link as introduced in the `Makefile`. The sample codes `HIRTrain.cpp` and `HIRTest.cpp` are references on how to develop your own task based on LibHIR. The five modules of LibHIR are introduced as follows.
 
 ### HIRConfig
 
-  This module loads in and stores the config file in HIR format, and specialized hyperparameters of the model, such as sizes of record numbers. Once some addition settings are to be added into your task, modify the `HIRConfig` class and its construction function, then instantiate it in your code. The compatible setting parameter formats are integer, float, string and vector.  
+  This module loads and stores the config file, and specifies hyperparameters of the model, such as the number of records. Once some additional settings need to be added in your task, please modify the `HIRConfig` class and the corresponding construction function, and then instantiate it. The compatible formats of parameters are integer, float, string and vector.  
 
 ```cpp
 //HIRConfig.h
@@ -165,7 +173,7 @@ HIRConfig::HIRConfig() {
 }
 ```
 
-  The modification of config file could be completed in two ways. The simpler method is to add a record in the `config.txt` directly; while the shortcoming is that it calls for repetition every time after running the preprocess script. Another once for all method is to modify the `outconfig()` function in the script `prepro.py`.
+  There are two ways to modify the config file. The simpler one is to add an additional attribution in the `config.txt` directly, and the shortcoming is that the file should be modified every time after running the preprocess script. The other one is to modify the `outconfig()` function in the script `prepro.py`.
 
 ```python
 def outconfig(cfname):
@@ -206,7 +214,7 @@ size = {2}""".format(listprint(imax,','),listprint(index, ','),listprint(size,',
 	config.close()
 ```  
 
-  After the modification, you could use the static HIRConfig object cfg declared in `HIR.h`. Firstly you have to initialize it by:
+  Then, you can use the static HIRConfig object cfg declared in `HIR.h`. Firstly, you have to initialize it by using:
 
 ```cpp
 //HIRTrain.cpp
@@ -216,15 +224,15 @@ cfg = HIRConfig();
 
 ### HIRArgument
 
-  This component serves as an argument parser.You could use the arguments defined in LibHIR, add your own options, or define your own parameters.  
-  The following function parse the argument separatly for sample code `HIRTrain.cpp` and `HIRTest.cpp` respectively.  
+  This module serves as an argument parser. You can use the arguments defined in LibHIR, add your own options, or define your own parameters.
+  The following function parse the argument for sample code `HIRTrain.cpp` and `HIRTest.cpp` respectively.
 
 ```cpp
 HIRTrainParam parse_train_argument(int argc, char** argv, int task);
 HIRTestParam parse_test_argument(int argc, char **argv, int task);
 ```  
 
-  The parameter task is to distinguish different task and indicating corresponding arguments and options. In the sample code, the default argument is initialized as follows:
+  The parameter `task` is to distinguish different tasks and indicate corresponding arguments and options. In the sample code, the default arguments are initialized as follows:
 
 ```cpp
 //HIRArgument.cpp
@@ -238,21 +246,21 @@ else {//Classification
 }
 ```
 
-  You could add algernative branches to handle the customized task. Besides, incompatible option and task should be treated carefully as follows:
+  You can add alternative branches to handle the customized task. Besides, incompatible option and task should be treated carefully as follows:
 
 ```cpp
 //HIRArgument.cpp
 // in function HIRTrainParam parse_train_argument(int argc, char **argv, int task);
 case 'e':
   evl = atoi(argv[i]);
-  if ((task == 1 && (evl == ABS_E || evl == RMSE_E)) ||
+  if ((task == 1 && (evl == MAE_E || evl == RMSE_E)) ||
     (task > 1 && (evl == AUC_E || evl == ACC_E)))
     param.evl = evl;
   else(param.errmsg.push_back("Argument Parser--The parameter evaluation method invalid."));
   break;
 ```
 
-  The task param is related to the regression and classification mission choice. The HIRTrainParam and HIRTestParam in the file are structs, therefore you could define your own parameter struct and declare function with return value of it, and parse the argument of your program. Take the parameter parsing function of `HIRTrain.cpp` as a sample:    
+  The task param is related to the chosen task, regression or classification. The HIRTrainParam and HIRTestParam are structs, therefore you could define your own struct of parameters and declare function with return value, and parse the argument. Take the parameter parsing function of `HIRTrain.cpp` as an example.
 
 ```cpp
 //HIRTrain.cpp
@@ -263,7 +271,7 @@ int evaluation_type = para_train.evl;
 
 ### HIRRecord
 
-  The `HIRRecord` serves as the data management module. We could load in and store the records in HIR format with it. You could instantiate the records as follows:
+  The `HIRRecord` serves as the data management module. It can load and store the records. You can instantiate the HIRRecord function as follows:
 
 ```cpp
 //HIRTrain.cpp
@@ -271,9 +279,9 @@ train = HIRRecord(cfg, 1);
 //HIRTest.cpp
 test = HIRRecord(cfg, 0);
 ```
-  The preprocsee script have helped split the raw records into two files as the training to total number ratio.  The second parameter 1 indicates using the front part of data, while 0 indicates the latter part.  
+  The preprocess script splits the raw records into two files. The second parameter 1 indicates using the front part of data, while 0 indicates the latter part. 
 
-  Members of the HIRRecord class is listed as follows:  
+  Members of the HIRRecord class are listed as follows:  
 
 ```cpp
 class HIRRecord {
@@ -293,11 +301,11 @@ public:
 };
 ```  
 
-  Once there are task with predicted value differ from float for regression and one-hot vector for classification, you could modify the declaration of ylist and hat_y. In function `HIRRecord::PredictSaving()`, the hat_y would be saved as a float number or one-hot vector for each record. Rewrite the function to save output once developing your own application.
+  If predicted results of a new task do not have the format of float or one-hot vector, you can modify the declaration of ylist and hat_y. In function `HIRRecord::PredictSaving()`, the hat_y can be saved as a float value or one-hot vector for each record. Please rewrite the function to save prediction when developing your own task.
 
 #### HIRModel  
 
-  The module HIRModel contains the parameter and gradient buffer of HIR model, and operations on it. The declaration of HIRModel is as follows:  
+  The module HIRModel contains parameters, the gradient buffer and operations of HIR model. The declaration of HIRModel is as follows.
 
 ```cpp
 //HIRModel.cpp
@@ -310,39 +318,10 @@ public:
 	int GradForward(HIRConfig cfg, int* index_list, double* feature);
 	int GradBackward(HIRConfig cfg, HIRTrainParam para, int* index_list);
 	int ismat, dim;
-
-	//should be made after the cfg and record have done and serve as the HIRModel class
-	std::vector<double*> elist; // param per entity indentity [model.txt]
-	std::vector<double*> mylist; // Linear M last-layer [model.txt]
-	std::vector<double**> hlist; // param per hidden-layer [model.txt]
-	std::vector<double***> Tnet; // Trans with tensor[model.txt]
-	std::vector<double*> rlist; //和Tnet+Hmat相同
-
-	//For backpropagation
-	double loss; //
-	double* dL_y; //	            [cfg.task]
-	std::vector<double*> dy_my; //  [cfg.task][dim]
-	std::vector<double*>dy_r; //    [cfg.task][dim]
-	std::vector<double**> dr_e; //  [cfg.enum] x [dim][dim]
-	std::vector<double**> dr_r; //  [size.size() + hnum - 1] x [dim][dim]
-	std::vector<double***> dr_T; // [size.size()] x [dim][dim][dim]
-	std::vector<double**> dr_H; //  [cfg.hnum] x [dim][dim]
-
-	std::vector<double*> dL_my; //  [cfg.task][dim]
-	std::vector<double*>dL_r; //    [size.size() + hnum][dim]
-	std::vector<double*> dL_e; //  [cfg.e_num] x [dim]
-	std::vector<double***> dL_T; // [size.size()] x [dim][dim][dim]
-	std::vector<double**> dL_H; //  [cfg.hnum] x [dim][dim]
-	double* feature;
-	std::vector<int> size, lidx, ridx;
-
-	HIRModel();
-	~HIRModel();
-	HIRModel(HIRConfig cfg);
-};
+	...
 ```
 
-  When using the HIR model, after the initialize as follows could the value of every component be fetched:  
+  The value of every component can be fetched after the initialization as follows.
 
 ```cpp
 //model init
@@ -350,9 +329,9 @@ HIR = HIRModel(cfg);
 HIR.GradInit(cfg);
 ```  
 
-   The HIR related parameters should not be modified without member function of `HIRModel`, except the `dL_my`, `dy_my`, `dL_y` and `loss`. Feel free to add task related parts to replace the matrix W(`mylist`) between the target representation of HIR, w.r.t. the last item in vector `rlist`, and output of the task target(`hat_y` of `HIRRecord`).
+   The parameters of HIR can be modified by using the member function of `HIRModel`. You can replace the matrix `mylist` with other components which are compatible to the defined output.
 
-   The default optimizer of LibHIR is Stochastic Gradient Descent. Once different learning method is defined, the function `forward_train` and `backward_train` is `HIRTrain.cpp`, and the function `GradForward` and `GradBackward` should be modified. In the training process, the function `forward_train` should be called firstly, with the HIR generating part( part before the target HIR representation) feedforard by calling `HIRModel::GradForward`, and the task related part( part after the HIR representation)) implemented in the origin function. Similarly, the task related part in backpropagation should be handled by `backward_train` and then calling the `HIRModel::GradBackward` to finish the HIR related work. Take the forward propagation as an instance:  
+   The default optimizer of LibHIR is Stochastic Gradient Descent. Once different learning methods are defined, the `forward_train` and `backward_train` functions in `HIRTrain.cpp`, and the `GradForward` and `GradBackward` functions in `HIRModel.cpp` should be modified. In the training process, the function `forward_train` should be called firstly, the feedforward process is finished within the HIR model (before the final representation) by calling `HIRModel::GradForward`, and the left part of the task (after the final representation) is implemented in the origin function. Similarly, the task related part in backpropagation should be handled by `backward_train` and then called `HIRModel::GradBackward` to finish the backpropagation of residual and update of HIR parameters. Take the forward propagation as an example:
 
 ```cpp
 //HIRTrain.cpp
@@ -382,7 +361,7 @@ int forward_train(int index, HIRConfig cfg) {
 }
 ```
 
-  Fucntion `HIRModel::ModelLoading` will load the model component parameters from the file writen by the outmodel function in preprocess, and `HIRModel::ModelSaving` willwrite it back from the HIRModel object, with the specify parameters of the HIRConfig. The `GradClear` deals with the derivation intermediate amount by setting their value to all zeros. Once auxiliary conponents are added in your application, the best practice could be adding in handle codes respectively in these functions, instead of implementing the operation in your main training loop.  
+  The `HIRModel::ModelLoading` function can load components of HIR model from the file written by the function `outmodel` in `prepro.py`, and `HIRModel::ModelSaving` can write it back from the HIRModel object, with the specify parameters of the HIRConfig. The `GradClear` deals with the gradients by setting their values to zero. Once auxiliary model structures are added to your application, adding codes respectively in these functions is better than implementing the operation in your main training loop.
 
 #### HIRTrain and HIRTest
 
@@ -432,7 +411,7 @@ int main(int argc, char**argv) {
 }
 ```  
 
-  If your want to predict with records and trained model, and save the predicted answer of your task, refer to the `HIRTest.cpp`:  
+  If your plan to predict the test records with the trained model, and save the prediction results, refer to the `HIRTest.cpp`:  
 
 ```cpp
 //HIRTest.cpp
@@ -467,6 +446,6 @@ int main(int argc, char**argv) {
 
 ## Additional Information  
 
-Further information of the HIR model could be found in the paper [Collaborative Prediction for Multi-entity Interaction With Hierarchical Representation](http://www.shuwu.name/sw/Liu2015HIR.pdf).
+Further information of the HIR model can be found in the paper [Collaborative Prediction for Multi-entity Interaction With Hierarchical Representation](http://www.shuwu.name/sw/Liu2015HIR.pdf).
 
 For any questions and comments, please email daiyaxuan2018@outlook.com.

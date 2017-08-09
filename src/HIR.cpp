@@ -17,8 +17,8 @@ double t_slides(int zz, int yy, int xx, int z, double***T, double*vx, double*vy)
 double evaluate(int category, int rnum, double** y, double** y_hat) {
 	double ee = 0;
 	switch (category) {
-	case ABS_E: {
-		//std::cout << "ABS_E" << std::endl;
+	case MAE_E: {
+		//std::cout << "MAE_E" << std::endl;
 		for (int i = 0; i < rnum; i++) {
 			ee += abs(y[i][0] - y_hat[i][0]);
 		}
@@ -70,7 +70,7 @@ double evaluate(int category, int rnum, double** y, double** y_hat) {
 			for (int i = 0; i < cfg.task; i++) {
 				y_hat[r][i] = (y_hat[r][i] - miy) / (may - miy);
 			}
-			//sorted by y 
+			//sorted by y
 			for (int i = 0; i < cfg.task-1; i++) {
 				for (int j = 0; j < cfg.task - i-1; j++) {
 					if (y[r][j+1] < y[r][j]) {
@@ -105,9 +105,9 @@ double loss(int category, double*y, double*y_hat) {
 			ee = ee + square(y[i] - y_hat[i]);
 		ee = ee / cfg.task;
 		ee = sqrt(ee);
-		break; 
+		break;
 	}
-	case ABS_L: {
+	case MAE_L: {
 		for (int i = 0; i < cfg.task; i++)
 			ee += abs(y[i] - y_hat[i]);
 		ee = ee / cfg.task;
@@ -126,11 +126,11 @@ double loss(int category, double*y, double*y_hat) {
 		double vy = -1e5, vhaty = -1e5;
 		for (int i = 0; i < cfg.task; i++) {
 			if (vy < y[i]) {
-				vy = y[i]; 
+				vy = y[i];
 				yans = i;
 			}
 			if (vhaty < y_hat[i]) {
-				vhaty = y_hat[i]; 
+				vhaty = y_hat[i];
 				yhatans = i;
 			}
 		}
@@ -168,10 +168,10 @@ void forward(int index, HIRModel* HIR, HIRRecord* REC, HIRConfig cfg) {
 		vr[z] = ztemp;
 	}
 	layer += 1;
-	
+
 	int lastT = cfg.e_num - 1;
 	if (cfg.fwid) lastT -= 1;
-	
+
 	while (layer < lastT) {
 		yy = cfg.size.at(layer);
 		vx = HIR->rlist.at(layer - 1);
@@ -231,7 +231,7 @@ void cpydftr(int dim, double* to, double* from) {
 
 //Multiple reloadd
 void forwardM(int xx, int yy, double* to, double* from, double* hir, double** trans) {
-	//forward  (from | hir)[xx]* trans[yy][xx] = to[yy] 
+	//forward  (from | hir)[xx]* trans[yy][xx] = to[yy]
 	int i, j;
 	for (i = 0; i < yy; i++) {
 		to[i] = 0;

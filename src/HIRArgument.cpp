@@ -35,7 +35,7 @@ void exit_with_help(int mission) {
 		"Usage : HIRTest [options]\n" <<
 		"Sample : \n" <<
 		"  HIRTest -e 1\n" <<
-		"options : \n" << 
+		"options : \n" <<
 		"-e evaluation method\n" <<
 		"  for regression\n" <<
 		"    4 -- abstract error evaluation\n" <<
@@ -86,14 +86,14 @@ HIRTrainParam parse_train_argument(int argc, char **argv, int task)
 			break;
 		case 'e':
 			evl = atoi(argv[i]);
-			if ((task == 1 && (evl == ABS_E || evl == RMSE_E)) ||
+			if ((task == 1 && (evl == MAE_E || evl == RMSE_E)) ||
 				(task > 1 && (evl == AUC_E || evl == ACC_E)))
 				param.evl = evl;
 			else(param.errmsg.push_back("Argument Parser--The parameter evaluation method invalid."));
 			break;
 		case 'o':
 			obj = atoi(argv[i]);
-			if ((task == 1 && (obj == ABS_L || obj == RMSE_L)) ||
+			if ((task == 1 && (obj == MAE_L || obj == RMSE_L)) ||
 				(task != 1 && (obj == LL_L || obj == GOLD_L)))
 				param.obj = obj;
 			else(param.errmsg.push_back("Argument Parser--The parameter object function invalid."));
@@ -125,18 +125,18 @@ HIRTrainParam parse_train_argument(int argc, char **argv, int task)
 		std::cout << argv[i] << std::endl;
 	}*/
 	//DEBUG
-	
+
 	/*
 	if (param.errmsg.size() > 0) {
-		for (std::vector<std::string>::iterator msg = param.errmsg.begin(); 
-			msg != param.errmsg.end(); 
+		for (std::vector<std::string>::iterator msg = param.errmsg.begin();
+			msg != param.errmsg.end();
 			msg++) {
 			std::cerr << msg->c_str() << std::endl;
 			//There are something wrong
 		}
 		exit_with_help(TRAIN);
-	}*/ 
-	//OUT ERR MSG 
+	}*/
+	//OUT ERR MSG
 
 	return param;
 }
@@ -163,7 +163,7 @@ HIRTestParam parse_test_argument(int argc, char **argv, int task) {
 		{
 		case 'e':
 			evl = atoi(argv[i]);
-			if ((task == 1 && (evl == ABS_E || evl == RMSE_E)) ||
+			if ((task == 1 && (evl == MAE_E || evl == RMSE_E)) ||
 				(task != 1 && (evl == AUC_E || evl == ACC_E)))
 				param.evl = evl;
 			else(param.errmsg.push_back("Argument Parser--The parameter evaluation method invalid."));

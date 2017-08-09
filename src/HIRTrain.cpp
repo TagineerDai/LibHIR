@@ -16,7 +16,7 @@ int main(int argc, char**argv) {
 	HIR = HIRModel(cfg);
 	HIR.GradInit(cfg);
 
-	//argument init	
+	//argument init
 	para_train = parse_train_argument(argc, argv, cfg.task);
 
 	//std::cout << param.errmsg.size() << std::endl;
@@ -27,9 +27,9 @@ int main(int argc, char**argv) {
 
 	//record(train) init
 	train = HIRRecord(cfg, 1);
-	
+
 	std::cout << "=== LOSS ===" << std::endl;
-	
+
 	std::vector<int> v;
 	for (int i = 0; i < train.rec; ++i) {
 		v.push_back(i);
@@ -37,7 +37,7 @@ int main(int argc, char**argv) {
 	int seed;
 	for (int epoch = 0; epoch < 100; epoch++) {
 		// forward
-		// obtain a time-based seed:  
+		// obtain a time-based seed:
 		seed = std::chrono::system_clock::now().time_since_epoch().count();
 		std::shuffle(v.begin(), v.end(), std::default_random_engine(seed));
 
@@ -85,7 +85,7 @@ int forward_train(int index, HIRConfig cfg) {
 	//double* hy = train.hat_y[0];
 	//for (int i = 0; i<cfg.task; i++)
 	//printf("%f\n", hy[i]);
-	
+
 
 	return 0;
 }
@@ -110,7 +110,7 @@ int backward_train(int index, HIRConfig cfg) {
 			HIR.dL_y[i] = (train.hat_y[index][i] - train.ylist[index][i]) / HIR.loss;
 		break;
 	}
-	case ABS_L: {
+	case MAE_L: {
 		for (i = 0; i < cfg.task; i++)
 			HIR.dL_y[i] = (train.hat_y[index][i] > train.ylist[index][i]) ? (-1 / cfg.task) : (1 / cfg.task);
 		break;
@@ -128,7 +128,7 @@ int backward_train(int index, HIRConfig cfg) {
 	}
 
 	//M backward [TESTED]
-	
+
 	lr = cfg.hnum + cfg.size.size() - 1;
 	for (i = 0; i < cfg.task; i++) {
 		for (j = 0; j < cfg.dim; j++) {
